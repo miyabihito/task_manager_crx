@@ -1,0 +1,42 @@
+.tm-menu {
+	position: fixed;
+	top: 70px;
+	width: 150px;
+	padding: 5px 0px;
+	font-size: large;
+} 
+
+.tm-menu li a {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.tm-content {
+	margin-top: 70px;
+}
+
+.tm-content .well {
+	padding-top: 10px;
+}
+
+.tm-content h2 {
+	margin-top: 0px;
+	padding-bottom: 0px;
+}
+
+.tm-task {
+	padding-bottom: 0px;
+	margin-bottom: 10px;
+}
+
+.tm-toggle-off {
+	display: none;
+}
+
+.tm-detail {
+	margin-top: 20px;
+}
+
+.tm-task-btn {
+	width: 100px;
+}
