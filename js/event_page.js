@@ -5,32 +5,39 @@
 **************************************/
 
 var TMCtrl = {
-	taskList : null,
-	taskOrder : null,
+	taskList : {},
+	listOrder : [],
+	compOrder : [],
 	getTask : function(id) {
 		id = parseInt(id);
 		return this.taskList[id];
 	},
-	getTaskList : function() {
+	getList : function() {
 		var tasks = [];
-		for ( i=0 ; i < this.taskOrder.length ; i++ )
+		for ( i=0 ; i < this.listOrder.length ; i++ )
 		{
-// adding new property to task in new version,
-// check key here (hasOwnProperty)
-			tasks.push(this.taskList[ this.taskOrder[i] ]);
+			tasks.push(this.taskList[ this.listOrder[i] ]);
 		}
 
 		return tasks;
 	},
+	getComp : function() {
+		var comps = [];
+		for ( i=0 ; i < this.compOrder.length ; i++ )
+		{
+			comps.push(this.taskList[ this.compOrder[i] ]);
+		}
+
+		return comps;
+	},
 	addTask : function(newTask) {
 		var task = {
-			id : null,
+			id : (new Date()).getTime(),
 			title : '',
 			detail : '',
 			deadline : '',
 			toggle : true,
 		};
-		task.id = (new Date()).getTime();
 
 		for ( var key in task )
 		{
@@ -41,76 +48,140 @@ var TMCtrl = {
 		}
 
 		this.taskList[task.id] = task;
-		this.taskOrder.unshift(task.id);
+		this.addList(task.id);
 
-		this.saveTaskList().saveTaskOrder();
+		this.saveTaskList().saveListOrder();
 		return this;
 	},
 	editTask : function(task) {
-		var storedTask = this.getTask(task.id);
-		storedTask.title = task.title;
-		storedTask.detail = task.detail;
-		storedTask.deadline = task.deadline;
+		id = parseInt(task.id);
+		var storedTask = this.getTask(id);
+		for ( var key in storedTask )
+		{
+			if ( task[key] !== undefined )
+			{
+				storedTask[key] = task[key];
+			}
+		}
 
-		this.taskList[task.id] = storedTask;
+		this.taskList[id] = storedTask;
 		this.saveTaskList();
 	},
 	toggleTask : function(id) {
+		id = parseInt(id);
 		var task = this.getTask(id);
 		task.toggle = task.toggle ? false : true;
 		this.taskList[id] = task;
 		this.saveTaskList();
 	},
+	setListOrder : function(listOrder) {
+		this.listOrder = listOrder;
+		this.saveListOrder();
+
+		return this;
+	},
+	addList : function(id) {
+		id = parseInt(id);
+		this.listOrder.unshift(id);
+		this.saveListOrder();
+
+		return this;
+	},
+	removeList : function(id) {
+		id = parseInt(id);
+		var index = this.listOrder.indexOf(id);
+		if ( index != -1 )
+		{
+			this.listOrder.splice(index, 1);
+			this.saveListOrder();
+		}
+
+		return this;
+	},
+	setCompOrder : function(compOrder) {
+		this.compOrder = compOrder;
+		this.saveCompOrder();
+
+		return this;
+	},
+	addComp : function(id) {
+		id = parseInt(id);
+		this.compOrder.unshift(id);
+		this.saveCompOrder();
+
+		return this;
+	},
+	removeComp : function(id) {
+		id = parseInt(id);
+		var index = this.compOrder.indexOf(id);
+		if ( index != -1 )
+		{
+			this.compOrder.splice(index, 1);
+			this.saveCompOrder();
+		}
+
+		return this;
+	},
+	completeTask : function(id) {
+		id = parseInt(id);
+		this.removeList(id).addComp(id);
+
+		return this;
+	},
+	removeTaskToList: function(id) {
+		id = parseInt(id);
+		this.removeComp(id);
+		this.addList(id);
+
+		return this;
+	},
 	removeTaskToTrash: function(id) {
 		id = parseInt(id);
-// move to trash
 
-// delete task from task list
-		delete this.taskList[id];
-		var index = this.taskOrder.indexOf(id);
-		this.taskOrder.splice(index, 1);
+		this.removeList(id)
+			.removeComp(id);
 
-		this.saveTaskList().saveTaskOrder();
+// add task to trash
 
 		return this;
 	},
-	setTaskOrder : function(taskOrder) {
-		this.taskOrder = taskOrder;
-		this.saveTaskOrder();
-
-		return this;
+	loadFromStorage : function(key) {
+		chrome.storage.local.get(key, function(items) {
+			if ( items[key] )
+			{
+				TMCtrl[key] = items[key];
+			}
+		});
 	},
 	loadTaskList : function() {
-		chrome.storage.local.get("taskList", function(items) {
-			if ( items.taskList )
-			{
-				TMCtrl.taskList = items.taskList;
-			}
-			else
-			{
-				TMCtrl.taskList = {};
-			}
-		});
+// adding new property to task in new version,
+// check key here (hasOwnProperty)
+		this.loadFromStorage("taskList");
 	},
-	loadTaskOrder : function() {
-		chrome.storage.local.get("taskOrder", function(items) {
-			if ( items.taskOrder )
-			{
-				TMCtrl.taskOrder = items.taskOrder;
-			}
-			else
-			{
-				TMCtrl.taskOrder = [];
-			}
-		});
-
+	loadListOrder : function() {
+		this.loadFromStorage("listOrder");
+	},
+	loadCompOrder : function() {
+		this.loadFromStorage("compOrder");
+	},
+	saveToStorage : function(key) {
+		var data = {};
+		data[key] = TMCtrl[key];
+		chrome.storage.local.set(data);
 	},
 	saveTaskList : function() {
-		chrome.storage.local.set({"taskList": TMCtrl.taskList});
+		this.saveToStorage("taskList");
+
 		return this;
 	},
-	saveTaskOrder : function() {
-		chrome.storage.local.set({"taskOrder": TMCtrl.taskOrder});
+	saveListOrder : function() {
+		this.saveToStorage("listOrder");
+
+		return this;
+	},
+	saveCompOrder : function() {
+		this.saveToStorage("compOrder");
+
 		return this;
 	},
 };
@@ -124,14 +195,14 @@ chrome.browserAction.onClicked.addListener( function() {
 	}
 	else
 	{
-		chrome.tabs.update(TMCtrl.tab.id, { active : true });
+		chrome.tabs.update(TMTab.id, { active : true });
 	}
 });
 
 
 
-
 //init
 TMCtrl.loadTaskList();
-TMCtrl.loadTaskOrder();
+TMCtrl.loadListOrder();
+TMCtrl.loadCompOrder();
 
