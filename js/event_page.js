@@ -8,6 +8,7 @@ var TMCtrl = {
 	taskList : {},
 	listOrder : [],
 	compOrder : [],
+	trashOrder : [],
 	getTask : function(id) {
 		id = parseInt(id);
 		return this.taskList[id];
@@ -29,6 +30,15 @@ var TMCtrl = {
 		}
 
 		return comps;
+	},
+	getTrash : function() {
+		var trash = [];
+		for ( i=0 ; i < this.trashOrder.length ; i++ )
+		{
+			trash.push(this.taskList[ this.trashOrder[i] ]);
+		}
+
+		return trash;
 	},
 	addTask : function(newTask) {
 		var task = {
@@ -66,6 +76,16 @@ var TMCtrl = {
 
 		this.taskList[id] = storedTask;
 		this.saveTaskList();
+	},
+	deleteTask : function(id) {
+		id = parseInt(id);
+
+		delete this.taskList[id];
+		this.saveTaskList();
+
+		this.removeList(id)
+			.removeComp(id)
+			.removeTrash(id);
 	},
 	toggleTask : function(id) {
 		id = parseInt(id);
@@ -122,6 +142,30 @@ var TMCtrl = {
 
 		return this;
 	},
+	setTrashOrder : function(trashOrder) {
+		this.trashOrder = trashOrder;
+		this.saveTrashOrder();
+
+		return this;
+	},
+	addTrash : function(id) {
+		id = parseInt(id);
+		this.trashOrder.unshift(id);
+		this.saveTrashOrder();
+
+		return this;
+	},
+	removeTrash : function(id) {
+		id = parseInt(id);
+		var index = this.trashOrder.indexOf(id);
+		if ( index != -1 )
+		{
+			this.trashOrder.splice(index, 1);
+			this.saveTrashOrder();
+		}
+
+		return this;
+	},
 	completeTask : function(id) {
 		id = parseInt(id);
 		this.removeList(id).addComp(id);
@@ -130,18 +174,17 @@ var TMCtrl = {
 	},
 	removeTaskToList: function(id) {
 		id = parseInt(id);
-		this.removeComp(id);
+		this.removeComp(id)
+			.removeTrash(id);
 		this.addList(id);
 
 		return this;
 	},
 	removeTaskToTrash: function(id) {
 		id = parseInt(id);
-
 		this.removeList(id)
 			.removeComp(id);
-
-// add task to trash
+		this.addTrash(id);
 
 		return this;
 	},
@@ -164,6 +207,9 @@ var TMCtrl = {
 	loadCompOrder : function() {
 		this.loadFromStorage("compOrder");
 	},
+	loadTrashOrder : function() {
+		this.loadFromStorage("trashOrder");
+	},
 	saveToStorage : function(key) {
 		var data = {};
 		data[key] = TMCtrl[key];
@@ -181,6 +227,11 @@ var TMCtrl = {
 	},
 	saveCompOrder : function() {
 		this.saveToStorage("compOrder");
+
+		return this;
+	},
+	saveTrashOrder : function() {
+		this.saveToStorage("trashOrder");
 
 		return this;
 	},
@@ -205,4 +256,4 @@ chrome.browserAction.onClicked.addListener( function() {
 TMCtrl.loadTaskList();
 TMCtrl.loadListOrder();
 TMCtrl.loadCompOrder();
-
+TMCtrl.loadTrashOrder();
