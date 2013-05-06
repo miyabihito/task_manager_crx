@@ -9,7 +9,7 @@
 TMComponents.add = {};
 TMComponents.add.onClick = function() {
 	$.get(chrome.extension.getURL('/html/list.tpl'), function(template) {
-		var taskList = TMCtrl.getTaskList();
+		var taskList = TMCtrl.getList();
 		$('#content').html($.mustache(template, {task_list : taskList}));
 
 		$.get(chrome.extension.getURL('/html/add.tpl'), function(modal) {

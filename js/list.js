@@ -51,15 +51,15 @@ TMComponents.list.onClick = function() {
 	var onCompleted = function(event) {
 		event.stopPropagation();
 		var id = $(this).parents('.tm-task').attr('id');
-	//	TMCtrl.removeTaskToTrash(id);
-		//$('#'+id).fadeOut(500).parent().remove();
+		TMCtrl.completeTask(id);
+		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
 	};
 
 	var onTrash = function(event) {
 		event.stopPropagation();
 		var id = $(this).parents('.tm-task').attr('id');
-		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
 		TMCtrl.removeTaskToTrash(id);
+		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
 	};
 
 	var onToggle = function() {
@@ -69,15 +69,15 @@ TMComponents.list.onClick = function() {
 	};
 
 	var onSortStop = function(event, ui) {
-		var taskOrder = [];
+		var listOrder = [];
 		$('.tm-task').each(function() {
-			taskOrder.push(parseInt($(this).attr('id')));
+			listOrder.push(parseInt($(this).attr('id')));
 		});
-		TMCtrl.setTaskOrder(taskOrder);
+		TMCtrl.setListOrder(listOrder);
 	};
 
 	$.get(chrome.extension.getURL('/html/list.tpl'), function(template) {
-		var taskList = TMCtrl.getTaskList();
+		var taskList = TMCtrl.getList();
 		$('#content').html($.mustache(template, {task_list : taskList}));
 		$('#sortable').sortable({
 			stop : onSortStop
