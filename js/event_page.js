@@ -108,6 +108,8 @@ var TMCtrl = {
 		this.listOrder.unshift(id);
 		this.saveListOrder();
 
+		this.setBadgeText();
+
 		return this;
 	},
 	removeList : function(id) {
@@ -117,6 +119,8 @@ var TMCtrl = {
 		{
 			this.listOrder.splice(index, 1);
 			this.saveListOrder();
+
+			this.setBadgeText();
 		}
 
 		return this;
@@ -227,7 +231,7 @@ var TMCtrl = {
 		this.loadFromStorage("taskList", callBack);
 	},
 	loadListOrder : function() {
-		this.loadFromStorage("listOrder");
+		this.loadFromStorage("listOrder", this.setBadgeText);
 	},
 	loadCompOrder : function() {
 		this.loadFromStorage("compOrder");
@@ -260,6 +264,10 @@ var TMCtrl = {
 
 		return this;
 	},
+	setBadgeText : function() {
+		var text = String(TMCtrl.listOrder.length);
+		chrome.browserAction.setBadgeText({text : text});
+	},
 };
 
 
@@ -282,3 +290,5 @@ TMCtrl.loadTaskList();
 TMCtrl.loadListOrder();
 TMCtrl.loadCompOrder();
 TMCtrl.loadTrashOrder();
+
+chrome.browserAction.setBadgeBackgroundColor({color : [0, 102, 255, 255]});
