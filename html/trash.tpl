@@ -4,7 +4,15 @@
 <div class="well tm-task" id="{{id}}">
 	<div>
 		<div class="row">
-			<div class="span5"><h2>{{title}}</h2></div>
+			<div class="span9">
+				{{#isCompleted}}
+					<span class="label label-success">COMPLETED</span>
+				{{/isCompleted}}
+				{{^isCompleted}}
+					<span class="label label-important">INCOMPLETED</span>
+				{{/isCompleted}}
+				<h2>{{title}}</h2>
+			</div>
 		</div>
 	</div>
 	{{#toggle}}

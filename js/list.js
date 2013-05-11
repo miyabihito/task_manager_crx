@@ -51,7 +51,7 @@ TMComponents.list.onClick = function() {
 	var onCompleted = function(event) {
 		event.stopPropagation();
 		var id = $(this).parents('.tm-task').attr('id');
-		TMCtrl.completeTask(id);
+		TMCtrl.removeTaskToCompleted(id);
 		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
 	};
 

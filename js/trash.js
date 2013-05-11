@@ -19,10 +19,17 @@ TMComponents.trash.onClick = function() {
 	var onReturn = function(event) {
 		event.stopPropagation();
 		var id = $(this).parents('.tm-task').attr('id');
-// TODO
-// if completed, return to completed
-// else return to list
-		TMCtrl.removeTaskToList(id);
+
+		var task = TMCtrl.getTask(id);
+		if ( task.isCompleted )
+		{
+			TMCtrl.removeTaskToCompleted(id);
+		}
+		else
+		{
+			TMCtrl.removeTaskToList(id);
+		}
+
 		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
 	};
 

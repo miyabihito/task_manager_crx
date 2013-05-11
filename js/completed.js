@@ -19,6 +19,12 @@ TMComponents.completed.onClick = function() {
 	var onReturn = function(event) {
 		event.stopPropagation();
 		var id = $(this).parents('.tm-task').attr('id');
+
+		var task = {};
+		task.id = id;
+		task.isCompleted = false;
+		TMCtrl.editTask(task);
+
 		TMCtrl.removeTaskToList(id);
 		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
 	};

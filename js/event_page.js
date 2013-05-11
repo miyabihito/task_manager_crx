@@ -5,6 +5,14 @@
 **************************************/
 
 var TMCtrl = {
+	defaultTask : {
+		id : '',
+		title : '',
+		detail : '',
+		deadline : '',
+		toggle : true,
+		isCompleted : false,
+	},
 	taskList : {},
 	listOrder : [],
 	compOrder : [],
@@ -41,13 +49,8 @@ var TMCtrl = {
 		return trash;
 	},
 	addTask : function(newTask) {
-		var task = {
-			id : (new Date()).getTime(),
-			title : '',
-			detail : '',
-			deadline : '',
-			toggle : true,
-		};
+		var task = this.defaultTask;
+		task.id = (new Date()).getTime();
 
 		for ( var key in task )
 		{
@@ -166,9 +169,17 @@ var TMCtrl = {
 
 		return this;
 	},
-	completeTask : function(id) {
+	removeTaskToCompleted : function(id) {
 		id = parseInt(id);
-		this.removeList(id).addComp(id);
+
+		var task = {};
+		task.id = id;
+		task.isCompleted = true;
+		this.editTask(task);
+
+		this.removeList(id)
+			.removeTrash(id);
+		this.addComp(id);
 
 		return this;
 	},
@@ -188,18 +199,32 @@ var TMCtrl = {
 
 		return this;
 	},
-	loadFromStorage : function(key) {
+	loadFromStorage : function(key, callBack) {
 		chrome.storage.local.get(key, function(items) {
 			if ( items[key] )
 			{
 				TMCtrl[key] = items[key];
 			}
+			if ( callBack )
+			{
+				callBack();
+			}
 		});
 	},
 	loadTaskList : function() {
-// adding new property to task in new version,
-// check key here (hasOwnProperty)
-		this.loadFromStorage("taskList");
+		var callBack = function() {
+			for ( var id in TMCtrl.taskList )
+			{
+				for ( key in TMCtrl.defaultTask )
+				{
+					if ( TMCtrl.taskList[id][key] === undefined )
+					{
+						TMCtrl.taskList[id][key] = TMCtrl.defaultTask[key];
+					}
+				}
+			}
+		};
+		this.loadFromStorage("taskList", callBack);
 	},
 	loadListOrder : function() {
 		this.loadFromStorage("listOrder");

@@ -4,7 +4,7 @@
 <div class="well tm-task" id="{{id}}">
 	<div>
 		<div class="row">
-			<div class="span5"><h2>{{title}}</h2></div>
+			<div class="span9"><h2>{{title}}</h2></div>
 		</div>
 	</div>
 	{{#toggle}}
