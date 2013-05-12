@@ -49,19 +49,18 @@ var TMCtrl = {
 		return trash;
 	},
 	addTask : function(newTask) {
-		var task = this.defaultTask;
-		task.id = (new Date()).getTime();
+		newTask.id = (new Date()).getTime();
 
-		for ( var key in task )
+		for ( var key in this.defaultTask )
 		{
-			if ( newTask[key] !== undefined )
+			if ( newTask[key] === undefined )
 			{
-				task[key] = newTask[key];
+				newTask[key] = this.defaultTask[key];
 			}
 		}
 
-		this.taskList[task.id] = task;
-		this.addList(task.id);
+		this.taskList[newTask.id] = newTask;
+		this.addList(newTask.id);
 
 		this.saveTaskList().saveListOrder();
 		return this;
@@ -283,6 +282,41 @@ chrome.browserAction.onClicked.addListener( function() {
 	}
 });
 
+// Badge Color
+chrome.browserAction.setBadgeBackgroundColor({color : [0, 102, 255, 255]});
+
+
+// Context Menu
+(function() {
+	// add page's url as task
+	var allMenu = {
+		id : 'all',
+		title : 'read this page later',
+		contexts : ['all'],
+		documentUrlPatterns : ['http://*/*', 'https://*/*'],
+	};
+	chrome.contextMenus.create(allMenu);
+
+	chrome.contextMenus.onClicked.addListener(function(info, tab) {
+		if ( info.menuItemId ==  allMenu.id )
+		{
+			var task = {};
+			task.title = 'READ LATER';
+			task.detail = 'PAGE TITLE: ' + tab.title + '\n'
+				+ 'PAGE URL  : ' + info.pageUrl;
+			TMCtrl.addTask(task);
+
+			var views = chrome.extension.getViews({type : 'tab'});
+			for ( var i = 0 ; i < views.length ; i++ )
+			{
+				if ( views[i].location.hash == '' || views[i].location.hash == '#list' )
+				{
+					views[i].location.reload();
+				}
+			}
+		}
+	});
+}());
 
 
 //init
@@ -290,5 +324,3 @@ TMCtrl.loadTaskList();
 TMCtrl.loadListOrder();
 TMCtrl.loadCompOrder();
 TMCtrl.loadTrashOrder();
-
-chrome.browserAction.setBadgeBackgroundColor({color : [0, 102, 255, 255]});
