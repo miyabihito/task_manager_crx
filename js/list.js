@@ -63,8 +63,11 @@ TMComponents.list.onClick = function() {
 	};
 
 	var onToggle = function() {
-		$(this).find('.tm-toggle').slideToggle();
-		var id = $(this).attr('id');
+		var toggle = $(this);
+		toggle.parents('.tm-task').find('.tm-toggle-target').slideToggle();
+		toggle.toggleClass('ui-icon-triangle-1-n ui-icon-triangle-1-s');
+
+		var id = toggle.parents('.tm-task').attr('id');
 		TMCtrl.toggleTask(id);
 	};
 
@@ -79,8 +82,20 @@ TMComponents.list.onClick = function() {
 	$.get(chrome.extension.getURL('/html/list.tpl'), function(template) {
 		var taskList = TMCtrl.getList();
 		$('#content').html($.mustache(template, {task_list : taskList}));
+
+		$('.ui-state-default').mouseenter( function() {
+			$(this).addClass('ui-state-hover');
+		})
+		.mouseleave( function() {
+			$(this).removeClass('ui-state-hover');
+		});
+
+		$('.tm-toggle').click(onToggle);
+
 		$('#sortable').sortable({
-			stop : onSortStop
+			stop : onSortStop,
+			handle : '.handle',
+			opacity : 0.7,
 		});
 
 		$('.tm-task-edit-btn').click(onEdit);
@@ -88,7 +103,5 @@ TMComponents.list.onClick = function() {
 		$('.tm-task-comp-btn').click(onCompleted);
 
 		$('.tm-task-trash-btn').click(onTrash);
-
-		$('.tm-task').click(onToggle);
 	});
 };

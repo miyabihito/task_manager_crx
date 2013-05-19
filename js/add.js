@@ -14,7 +14,7 @@ TMComponents.add.onClick = function() {
 
 		$.get(chrome.extension.getURL('/html/add.tpl'), function(modal) {
 			$('#content').append(modal);
-// set event listner
+
 			$('#deadline').datepicker({
 				dateFormat : "yy/mm/dd",
 				onSelect : function() { $('#detail').focus() },

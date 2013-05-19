@@ -7,19 +7,19 @@
 			<div class="control-group">
 				<label class="control-label" for="title">TITLE</label>
 				<div class="controls">
-					<input type="text" id="title" placeholder="input title.">
+					<input type="text" id="title" class="span5" placeholder="input title.">
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="deadline">DEADLINE</label>
 				<div class="controls">
-					<input type="text" id="deadline" placeholder="YYYY/MM/DD">
+					<input type="text" id="deadline" class="span5" placeholder="YYYY/MM/DD">
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="detail">DETAIL</label>
 				<div class="controls">
-					<textarea id="detail" rows="3" placeholder="input detail."></textarea>
+					<textarea id="detail" class="span5" rows="8" placeholder="input detail."></textarea>
 				</div>
 			</div>
 	</div>

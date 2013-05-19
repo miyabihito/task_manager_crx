@@ -1,3 +1,11 @@
+.form-horizontal .control-label {
+	width: 100px;
+}
+
+.form-horizontal .controls {
+	margin-left: 120px;
+}
+
 .tm-menu {
 	position: fixed;
 	top: 70px;
@@ -27,6 +35,24 @@
 .tm-task {
 	padding-bottom: 0px;
 	margin-bottom: 10px;
+}
+
+.tm-task .ui-icon {
+	float: right;
+	margin-right: 2px;
+	margin-bottom: 10px;
+}
+
+.tm-task .handle {
+	cursor: move;
+}
+
+.tm-task .label {
+	margin-left: 20px;
+}
+
+.tm-toggle {
+	cursor: pointer;
 }
 
 .tm-toggle-off {

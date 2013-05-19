@@ -40,9 +40,12 @@ TMComponents.trash.onClick = function() {
 		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
 	};
 
-	var onClick = function() {
-		$(this).find('.tm-toggle').slideToggle();
-		var id = $(this).attr('id');
+	var onToggle = function() {
+		var toggle = $(this);
+		toggle.parents('.tm-task').find('.tm-toggle-target').slideToggle();
+		toggle.toggleClass('ui-icon-triangle-1-n ui-icon-triangle-1-s');
+
+		var id = toggle.parents('.tm-task').attr('id');
 		TMCtrl.toggleTask(id);
 	};
 
@@ -50,14 +53,24 @@ TMComponents.trash.onClick = function() {
 		var trashList = TMCtrl.getTrash();
 		$('#content').html($.mustache(template, {trash_list : trashList}));
 
+		$('.ui-state-default').mouseenter( function() {
+			$(this).addClass('ui-state-hover');
+		})
+		.mouseleave( function() {
+			$(this).removeClass('ui-state-hover');
+		});
+
+		$('.tm-toggle').click(onToggle);
+
 		$('#sortable').sortable({
-			stop : onSortStop
+			stop : onSortStop,
+			handle : '.handle',
+			opacity : 0.7,
 		});
 
 		$('.tm-task-return-btn').click(onReturn);
 
 		$('.tm-task-delete-btn').click(onDelete);
 
-		$('.tm-task').click(onClick);
 	});
 };

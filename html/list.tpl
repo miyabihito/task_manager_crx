@@ -5,13 +5,20 @@
 	<div>
 		<div class="row">
 			<div class="span9"><h2>{{title}}</h2></div>
+			<span class="handle ui-icon ui-icon-arrowthick-2-n-s ui-corner-all ui-state-default"></span>
+			{{#toggle}}
+			<span class="tm-toggle ui-icon ui-icon-triangle-1-n ui-corner-all ui-state-default"></span>
+			{{/toggle}}
+			{{^toggle}}
+			<span class="tm-toggle ui-icon ui-icon-triangle-1-s ui-corner-all ui-state-default"></span>
+			{{/toggle}}
 		</div>
 	</div>
 	{{#toggle}}
-	<div class="tm-toggle">
+	<div class="tm-toggle-target">
 	{{/toggle}}
 	{{^toggle}}
-	<div class="tm-toggle tm-toggle-off">
+	<div class="tm-toggle-target tm-toggle-off">
 	{{/toggle}}
 		<div class="row">
 			<div class="span2"><i class="icon-calendar"></i>{{deadline}}</div>

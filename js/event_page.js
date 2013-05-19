@@ -282,6 +282,7 @@ chrome.browserAction.onClicked.addListener( function() {
 	}
 });
 
+
 // Badge Color
 chrome.browserAction.setBadgeBackgroundColor({color : [0, 102, 255, 255]});
 
