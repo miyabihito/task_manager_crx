@@ -1,6 +1,6 @@
 {
 	"name" : "Task Manager",
-	"version" : "1.0.0",
+	"version" : "1.0.1",
 	"manifest_version" : 2,
 	"description" : "help you to manage tasks",
 	"icons" : {
