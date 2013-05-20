@@ -300,7 +300,7 @@ chrome.browserAction.setBadgeBackgroundColor({color : [0, 102, 255, 255]});
 	// add page's url as task
 	var allMenu = {
 		id : 'all',
-		title : 'read this page later',
+		title : 'Read this page later',
 		contexts : ['all'],
 		documentUrlPatterns : ['http://*/*', 'https://*/*'],
 	};

@@ -1,3 +1,7 @@
+.navbar p.pull-right {
+	color: #999;
+}
+
 .form-horizontal .control-label {
 	width: 100px;
 }
