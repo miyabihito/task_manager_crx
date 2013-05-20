@@ -6,10 +6,10 @@
 *
 **************************************/
 
-TMComponents.add = {};
-TMComponents.add.onClick = function() {
+TM.Components.add = {};
+TM.Components.add.onClick = function() {
 	$.get(chrome.extension.getURL('/html/list.tpl'), function(template) {
-		var taskList = TMCtrl.getList();
+		var taskList = TM.Ctrl.getList();
 		$('#content').html($.mustache(template, {task_list : taskList}));
 
 		$.get(chrome.extension.getURL('/html/add.tpl'), function(modal) {
@@ -26,7 +26,7 @@ TMComponents.add.onClick = function() {
 				task.detail = $('#detail').val();
 				task.deadline = $('#deadline').val();
 				task.toggle = true;
-				TMCtrl.addTask(task);
+				TM.Ctrl.addTask(task);
 
 				$('#tm-add-modal').modal('hide');
 			});

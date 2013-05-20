@@ -6,14 +6,14 @@
 *
 **************************************/
 
-TMComponents.list = {};
-TMComponents.list.onClick = function() {
+TM.Components.list = {};
+TM.Components.list.onClick = function() {
 
 	var onEdit = function(event) {
 		event.stopPropagation();
 		var id = $(this).parents('.tm-task').attr('id');
 		$.get(chrome.extension.getURL('/html/edit.tpl'), function(modal) {
-			var task = TMCtrl.getTask(id);
+			var task = TM.Ctrl.getTask(id);
 			$('#content').append($.mustache(modal,task));
 
 			$('#deadline').datepicker({
@@ -22,7 +22,7 @@ TMComponents.list.onClick = function() {
 			});
 
 			$('#tm-edit-task-btn').click(function() {
-				TMCtrl.editTask(
+				TM.Ctrl.editTask(
 					{
 						id : id,
 						title : $('#title').val(),
@@ -41,7 +41,7 @@ TMComponents.list.onClick = function() {
 				$('#title').focus();
 			})
 			.on('hidden', function() {
-				TMComponents.list.onClick();
+				TM.Components.list.onClick();
 			})
 			.modal('show');
 
@@ -51,14 +51,14 @@ TMComponents.list.onClick = function() {
 	var onCompleted = function(event) {
 		event.stopPropagation();
 		var id = $(this).parents('.tm-task').attr('id');
-		TMCtrl.removeTaskToCompleted(id);
+		TM.Ctrl.removeTaskToCompleted(id);
 		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
 	};
 
 	var onTrash = function(event) {
 		event.stopPropagation();
 		var id = $(this).parents('.tm-task').attr('id');
-		TMCtrl.removeTaskToTrash(id);
+		TM.Ctrl.removeTaskToTrash(id);
 		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
 	};
 
@@ -68,7 +68,7 @@ TMComponents.list.onClick = function() {
 		toggle.toggleClass('ui-icon-triangle-1-n ui-icon-triangle-1-s');
 
 		var id = toggle.parents('.tm-task').attr('id');
-		TMCtrl.toggleTask(id);
+		TM.Ctrl.toggleTask(id);
 	};
 
 	var onSortStop = function(event, ui) {
@@ -76,11 +76,11 @@ TMComponents.list.onClick = function() {
 		$('.tm-task').each(function() {
 			listOrder.push(parseInt($(this).attr('id')));
 		});
-		TMCtrl.setListOrder(listOrder);
+		TM.Ctrl.setListOrder(listOrder);
 	};
 
 	$.get(chrome.extension.getURL('/html/list.tpl'), function(template) {
-		var taskList = TMCtrl.getList();
+		var taskList = TM.Ctrl.getList();
 		$('#content').html($.mustache(template, {task_list : taskList}));
 
 		$('.ui-state-default').mouseenter( function() {

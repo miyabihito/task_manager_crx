@@ -4,7 +4,8 @@
 *
 **************************************/
 
-var TMCtrl = {
+var TM = {};
+TM.Ctrl = {
 	defaultTask : {
 		id : '',
 		title : '',
@@ -104,10 +105,12 @@ var TMCtrl = {
 	},
 	addList : function(id) {
 		id = parseInt(id);
-		this.listOrder.unshift(id);
-		this.saveListOrder();
-
-		this.setBadgeText();
+		if ( this.listOrder.indexOf(id) == -1 )
+		{
+			this.listOrder.unshift(id);
+			this.saveListOrder();
+			this.setBadgeText();
+		}
 
 		return this;
 	},
@@ -132,8 +135,11 @@ var TMCtrl = {
 	},
 	addComp : function(id) {
 		id = parseInt(id);
-		this.compOrder.unshift(id);
-		this.saveCompOrder();
+		if ( this.compOrder.indexOf(id) == -1 )
+		{
+			this.compOrder.unshift(id);
+			this.saveCompOrder();
+		}
 
 		return this;
 	},
@@ -156,8 +162,11 @@ var TMCtrl = {
 	},
 	addTrash : function(id) {
 		id = parseInt(id);
-		this.trashOrder.unshift(id);
-		this.saveTrashOrder();
+		if ( this.trashOrder.indexOf(id) == -1 )
+		{
+			this.trashOrder.unshift(id);
+			this.saveTrashOrder();
+		}
 
 		return this;
 	},
@@ -206,7 +215,7 @@ var TMCtrl = {
 		chrome.storage.local.get(key, function(items) {
 			if ( items[key] )
 			{
-				TMCtrl[key] = items[key];
+				TM.Ctrl[key] = items[key];
 			}
 			if ( callBack )
 			{
@@ -216,13 +225,13 @@ var TMCtrl = {
 	},
 	loadTaskList : function() {
 		var callBack = function() {
-			for ( var id in TMCtrl.taskList )
+			for ( var id in TM.Ctrl.taskList )
 			{
-				for ( key in TMCtrl.defaultTask )
+				for ( key in TM.Ctrl.defaultTask )
 				{
-					if ( TMCtrl.taskList[id][key] === undefined )
+					if ( TM.Ctrl.taskList[id][key] === undefined )
 					{
-						TMCtrl.taskList[id][key] = TMCtrl.defaultTask[key];
+						TM.Ctrl.taskList[id][key] = TM.Ctrl.defaultTask[key];
 					}
 				}
 			}
@@ -240,7 +249,7 @@ var TMCtrl = {
 	},
 	saveToStorage : function(key) {
 		var data = {};
-		data[key] = TMCtrl[key];
+		data[key] = TM.Ctrl[key];
 		chrome.storage.local.set(data);
 	},
 	saveTaskList : function() {
@@ -264,21 +273,20 @@ var TMCtrl = {
 		return this;
 	},
 	setBadgeText : function() {
-		var text = String(TMCtrl.listOrder.length);
+		var text = String(TM.Ctrl.listOrder.length);
 		chrome.browserAction.setBadgeText({text : text});
 	},
 };
 
 
-var TMTab;
 chrome.browserAction.onClicked.addListener( function() {
 	if ( chrome.extension.getViews({type: "tab"}).length == 0 )
 	{
-		chrome.tabs.create({url: '../html/manager.html'}, function(tab){ TMTab = tab });
+		chrome.tabs.create({url: '../html/manager.html'}, function(tab){ TM.Tab = tab });
 	}
 	else
 	{
-		chrome.tabs.update(TMTab.id, { active : true });
+		chrome.tabs.update(TM.Tab.id, { active : true });
 	}
 });
 
@@ -305,7 +313,7 @@ chrome.browserAction.setBadgeBackgroundColor({color : [0, 102, 255, 255]});
 			task.title = 'READ LATER';
 			task.detail = 'PAGE TITLE: ' + tab.title + '\n'
 				+ 'PAGE URL  : ' + info.pageUrl;
-			TMCtrl.addTask(task);
+			TM.Ctrl.addTask(task);
 
 			var views = chrome.extension.getViews({type : 'tab'});
 			for ( var i = 0 ; i < views.length ; i++ )
@@ -321,7 +329,7 @@ chrome.browserAction.setBadgeBackgroundColor({color : [0, 102, 255, 255]});
 
 
 //init
-TMCtrl.loadTaskList();
-TMCtrl.loadListOrder();
-TMCtrl.loadCompOrder();
-TMCtrl.loadTrashOrder();
+TM.Ctrl.loadTaskList();
+TM.Ctrl.loadListOrder();
+TM.Ctrl.loadCompOrder();
+TM.Ctrl.loadTrashOrder();

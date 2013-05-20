@@ -6,28 +6,28 @@
 *
 **************************************/
 
-TMComponents.trash = {};
-TMComponents.trash.onClick = function() {
+TM.Components.trash = {};
+TM.Components.trash.onClick = function() {
 	var onSortStop = function(event, ui) {
 		var trashOrder = [];
 		$('.tm-task').each(function() {
 			trashOrder.push(parseInt($(this).attr('id')));
 		});
-		TMCtrl.setTrashOrder(trashOrder);
+		TM.Ctrl.setTrashOrder(trashOrder);
 	};
 
 	var onReturn = function(event) {
 		event.stopPropagation();
 		var id = $(this).parents('.tm-task').attr('id');
 
-		var task = TMCtrl.getTask(id);
+		var task = TM.Ctrl.getTask(id);
 		if ( task.isCompleted )
 		{
-			TMCtrl.removeTaskToCompleted(id);
+			TM.Ctrl.removeTaskToCompleted(id);
 		}
 		else
 		{
-			TMCtrl.removeTaskToList(id);
+			TM.Ctrl.removeTaskToList(id);
 		}
 
 		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
@@ -36,7 +36,7 @@ TMComponents.trash.onClick = function() {
 	var onDelete = function(event) {
 		event.stopPropagation();
 		var id = $(this).parents('.tm-task').attr('id');
-		TMCtrl.deleteTask(id);
+		TM.Ctrl.deleteTask(id);
 		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
 	};
 
@@ -46,11 +46,11 @@ TMComponents.trash.onClick = function() {
 		toggle.toggleClass('ui-icon-triangle-1-n ui-icon-triangle-1-s');
 
 		var id = toggle.parents('.tm-task').attr('id');
-		TMCtrl.toggleTask(id);
+		TM.Ctrl.toggleTask(id);
 	};
 
 	$.get(chrome.extension.getURL('/html/trash.tpl'), function(template) {
-		var trashList = TMCtrl.getTrash();
+		var trashList = TM.Ctrl.getTrash();
 		$('#content').html($.mustache(template, {trash_list : trashList}));
 
 		$('.ui-state-default').mouseenter( function() {

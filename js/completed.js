@@ -6,14 +6,14 @@
 *
 **************************************/
 
-TMComponents.completed = {};
-TMComponents.completed.onClick = function() {
+TM.Components.completed = {};
+TM.Components.completed.onClick = function() {
 	var onSortStop = function(event, ui) {
 		var compOrder = [];
 		$('.tm-task').each(function() {
 			compOrder.push(parseInt($(this).attr('id')));
 		});
-		TMCtrl.setCompOrder(compOrder);
+		TM.Ctrl.setCompOrder(compOrder);
 	};
 
 	var onReturn = function(event) {
@@ -23,16 +23,16 @@ TMComponents.completed.onClick = function() {
 		var task = {};
 		task.id = id;
 		task.isCompleted = false;
-		TMCtrl.editTask(task);
+		TM.Ctrl.editTask(task);
 
-		TMCtrl.removeTaskToList(id);
+		TM.Ctrl.removeTaskToList(id);
 		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
 	};
 
 	var onTrash = function(event) {
 		event.stopPropagation();
 		var id = $(this).parents('.tm-task').attr('id');
-		TMCtrl.removeTaskToTrash(id);
+		TM.Ctrl.removeTaskToTrash(id);
 		$('#'+id).fadeOut(500, function() { $(this).parent().remove(); });
 	};
 
@@ -42,11 +42,11 @@ TMComponents.completed.onClick = function() {
 		toggle.toggleClass('ui-icon-triangle-1-n ui-icon-triangle-1-s');
 
 		var id = toggle.parents('.tm-task').attr('id');
-		TMCtrl.toggleTask(id);
+		TM.Ctrl.toggleTask(id);
 	};
 
 	$.get(chrome.extension.getURL('/html/completed.tpl'), function(template) {
-		var compList = TMCtrl.getComp();
+		var compList = TM.Ctrl.getComp();
 		$('#content').html($.mustache(template, {comp_list : compList}));
 
 		$('.ui-state-default').mouseenter( function() {

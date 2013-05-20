@@ -7,12 +7,13 @@
 * * add click listener
 **************************************/
 
-var TMCtrl = chrome.extension.getBackgroundPage().TMCtrl;
-var TMComponents = {};
+var TM = {};
+TM.Ctrl = chrome.extension.getBackgroundPage().TM.Ctrl;
+TM.Components = {};
 
 $(function(){
 // set click listener to each anchor
-	for ( component in TMComponents )
+	for ( component in TM.Components )
 	{
 		$('#' + component).click(function(){
 			if ( ! $(this).parent().hasClass('active') && $('.modal').length == 0 )
@@ -21,7 +22,7 @@ $(function(){
 						.siblings()
 						.removeClass('active');
 
-				TMComponents[$(this).attr('id')].onClick();
+				TM.Components[$(this).attr('id')].onClick();
 			}
 		});
 	}
@@ -30,5 +31,5 @@ $(function(){
 	$('#list').parent().addClass('active');
 
 // display tasks (by call click listener of list)
-	TMComponents.list.onClick();
+	TM.Components.list.onClick();
 });
